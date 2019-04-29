@@ -1,19 +1,20 @@
 import React, { useState, useEffect, useContext } from "react";
 import socket from "./socket";
+import { RouteComponentProps } from "react-router-dom";
 import { HOST_REQUEST, INITIATE_ROOM } from "./actions";
 import GameContext from "./contexts/GameContext";
 import PlayerContext from "./contexts/PlayerContext";
-import { RouteComponentProps } from "react-router-dom";
+import HostContext from "./contexts/HostContext";
 
-const Host: React.FC<RouteComponentProps> = ({match, history}) => {
+const Host: React.FC<RouteComponentProps> = ({ history }) => {
   const [nickname, setNickname] = useState("");
   const [word, setWord] = useState("");
 
   const { setGame } = useContext(GameContext);
-  const { players, setPlayers } = useContext(PlayerContext);
+  const { setPlayers } = useContext(PlayerContext);
+  const { setHost } = useContext(HostContext);
 
   const handleHost = () => {
-    console.log("here");
     socket.emit(HOST_REQUEST, word, nickname);
   };
 
@@ -22,12 +23,13 @@ const Host: React.FC<RouteComponentProps> = ({match, history}) => {
       INITIATE_ROOM,
       (room: string, nickname: string, socketId: string) => {
         // TODO: refactor to interface and single object?
-        setGame(prevGame => ({...prevGame, room: room}));
-        setPlayers(prevPlayers => ([...prevPlayers, nickname]));
-        history.push('/game/' + room);
+        setGame(prevGame => ({ ...prevGame, room: room }));
+        setPlayers(prevPlayers => [...prevPlayers, nickname]);
+        setHost(prevHost => ({ ...prevHost, word: word, isHost: true }));
+        history.push("/game/" + room);
       }
     );
-  },[setGame, setPlayers]);
+  }, [setGame, setPlayers, history]);
 
   return (
     <div>

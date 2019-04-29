@@ -6,20 +6,10 @@ import Join from "./Join";
 import Home from "./Home";
 import Game from "./Game";
 
-import HostContext from "./contexts/HostContext";
+import HostContext, { IHost } from "./contexts/HostContext";
 import PlayerContext from "./contexts/PlayerContext";
 import AttemptContext from "./contexts/AttemptContext";
 import GameContext, { IGame } from "./contexts/GameContext";
-
-interface Host {
-  word?: string;
-  isHost: boolean;
-}
-
-interface Game {
-  room?: string;
-  hasStarted: boolean;
-}
 
 interface Attempt {
   attempts: any;
@@ -28,7 +18,7 @@ interface Attempt {
 }
 
 const App: React.FC = () => {
-  const [host, setHost] = useState<Host>({
+  const [host, setHost] = useState<IHost>({
     word: undefined,
     isHost: false
   });
